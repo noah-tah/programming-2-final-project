@@ -26,6 +26,10 @@ public class FinalProjectNoahTah {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         String storedMessage = "Encryption or decryption successful. This system is ready for further testing of messages.";
+        String inputMessage = "I can't wait to play Oblivion Remastered!";
+        int shift = 3;
+        String caesarEncryptedMessage = caesarEncryption(inputMessage, shift);
+        System.out.println("Encrypted Message: " + caesarEncryptedMessage);
 
 
     }

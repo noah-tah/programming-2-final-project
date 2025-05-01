@@ -18,43 +18,35 @@ Assignment Description:
     after accepting the key from the user, the program should display this message in its encrypted form
     and in its decrypted form.
  */
+
 #include <iostream>
 #include <string>
+#include <vector>
 
-class MessageObject {
-private:
-    std::string message1;
-    std::string message2;
 
-public:
-    // Constructor to initialize the messages
-    MessageObject() 
-        : message1("Encryption or decryption successful"), 
-          message2("This system is ready for further testing of messages") {}
-
-    // Method to get the first message
-    std::string getMessage1() const {
-        return message1;
+// Caesar Shift Encryption Function
+std::string caesarShiftEncryption(const std::string& message, int shift) {      // Shift value as a parameter makes this function more flexible
+    std::string encryptedMessage = message;
+    for (char& c : encryptedMessage) {
+        if (isalpha(c)) {                                                       // Check if the character is an alphabet letter
+            char base = islower(c) ? 'a' : 'A';                                 // Check if the character is lowercase or uppercase, and set the base accordingly
+            c = (c - base + shift) % 26 + base;                                 // Shift the character and wrap around using modulo 26 
+        }
     }
+    return encryptedMessage;
+}
 
-    // Method to get the second message
-    std::string getMessage2() const {
-        return message2;
-    }
+// Caesar Shift Decryption Function
+std::string caesarShiftDecryption(const std::string& message, int shift) {      
+    return caesarShiftEncryption(message, 26 - shift);                          // Decrypting is just shifting back by the same amount
+}
 
-    // Method to display both messages
-    void displayMessages() const {
-        std::cout << "Message 1: " << message1 << std::endl;
-        std::cout << "Message 2: " << message2 << std::endl;
-    }
-};
-
-int main() {
-    // Create an instance of MessageObject
-    MessageObject messages;
-
-    // Display the stored messages
-    messages.displayMessages();
+ int main() {
+    std::string inputMessage = "I can't wait to play Oblivion Remastered!";     // This will be used to store an example message 
+    int shift = 3;                                                              // This is how much we want to shift the message by
+    std::string caesarEncryptedMessage = caesarShiftEncryption(inputMessage, shift);
+    std::cout << "Encrypted message: " << caesarEncryptedMessage << std::endl;  // This will show the encrypted message
+    std::cout << "Decrypted message: " << caesarShiftDecryption(caesarEncryptedMessage, shift) << std::endl; // This will show the decrypted message
 
     return 0;
-}
+ }
