@@ -104,10 +104,9 @@ void encryptionDemonstration() {
     waitForInput();
     clearScreen();
 
-    std::cout << "Decrypting message..." << std::endl;
-    
-    std::cout << "\nMessage before decryption: " << "\"" << finalXorEncryptedMessage << "\"" << std::endl;
+    std::cout << "Message before decryption: " << "\"" << finalXorEncryptedMessage << "\"" << std::endl;
 
+    std::cout << "\nDecrypting message..." << std::endl;
     std::string xorDecryptedMessage = xorDecryption(finalXorEncryptedMessage, KEY);
     std::cout << "\nAfter XOR decryption: " << "\"" <<  xorDecryptedMessage << "\"" << std::endl;
 
