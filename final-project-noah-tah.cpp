@@ -1,3 +1,24 @@
+/*
+Noah Tah
+4/30/2025-5/1/2025
+Programming II
+Evan Vaverka
+Northwestern Oklahoma State University
+Assignment Description:
+    The final for this class is to take one of the cipher systems we talked about and make a program that encrypts and decrypts messages.
+    Probably the easiest way of doing this would be to use a shift (Ceaser) cipher.
+    You are welcome to make this as complex as you would like though.
+    You can use either C++ or Java for this assignment. 
+    When the program starts it needs to ask the user if they want to encrypt a message, decrypt a message or to show the stored message.
+    For these parts to work the user will need to know if there is a key to solving the cipher and will need to enter that after selecting an option.
+    (Example: If using a shift cipher the user needs to know how many spaces to shift the alphabet so it lines up correctly.)
+    So this mean that you have to submit the key to me when you turn in the code.
+    The stored message is, "Encryption or decryption successful. This system is ready for further testing of messages." If the user selects the option to show the stored message, after accepting the key from the user, the program should display this message in its encrypted form and in it decrypted form. 
+
+    If you have any questions or problems, get ahold of me. I can't help you if I dont know about the problem. 
+    This is due by NOON, FRIDAY, MAY 9th. I wont accept it if this is late and you have not contacted me before the due time.
+*/
+
 #include <iostream>
 #include <string>
 #include <bitset>
@@ -6,6 +27,28 @@
 #ifdef _WIN32
 #include <cstdlib> // For system()
 #endif
+
+/*
+Function prototypes to make compiler happy
+*/
+void encryptionDemonstration();
+void programIntroduction();
+void mainMenu();
+void encryptMessage();
+void decryptMessage();
+std::string getMessageToEncrypt();
+std::string caesarShiftEncryption(const std::string& message, int SHIFT);
+std::string caesarShiftDecryption(const std::string& message, int shift);
+int createXorKey(const std::string& KEY);
+std::string xorEncryption(const std::string& message, const std::string& KEY);
+std::string xorDecryption(const std::string& message, const std::string& KEY);
+void printBinary(const std::string& message);
+void waitForInput();
+void clearScreen();
+void encryptMessage();
+/*
+End of function prototypes
+*/
 
 std::string caesarShiftEncryption(const std::string& message, int SHIFT) {
     std::string encryptedMessage = message;
@@ -130,10 +173,141 @@ void programIntroduction() {
     clearScreen();
 }
 
+void mainMenu() {
+    std::cout << "1. Replay Encryption Demonstration (Stored Message)" << std::endl;
+    std::cout << "2. Enter a message to encrypt" << std::endl;
+    std::cout << "3. Enter a message to decrypt" << std::endl;
+    std::cout << "Please select an option: ";
+    int choice;
+    std:: cin >> choice;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
+    switch (choice) {
+        case 1:
+            encryptionDemonstration();
+            break;
+        case 2: {
+            encryptMessage();
+            break;
+        }
+        case 3: {
+            decryptMessage();
+            break;
+        }
+        default:
+            std::cout << "Invalid choice. Please try again." << std::endl;
+    }
+}
+
+std::string getMessageToEncrypt() {
+    std::string message;
+    std::cout << "Enter the message to encrypt: ";
+    std::getline(std::cin, message);
+    return message;
+}
+
+
+
+void encryptMessage() {
+    std::cout << "Would you like you use your own KEY? (Y/N): " << std::endl;
+    char choice;
+    std::cin >> choice;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
+    std::string KEY;
+    if (choice == 'Y' || choice == 'y') {
+        std::cout << "Enter your KEY: ";
+        std::getline(std::cin, KEY);
+        std::cout << "Your KEY is: " << KEY << std::endl;
+    } else {
+        std::cout << "Using default KEY: SWORD" << std::endl;
+        KEY = "SWORD";
+    }
+
+    std::cout << "Would you like to use your own SHIFT? (Y/N): " << std::endl;
+    char choice2;
+    std::cin >> choice2;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
+    int SHIFT;
+    if (choice2 == 'Y' || choice2 == 'y') {
+        std::cout << "Enter your SHIFT: ";
+        std::cin >> SHIFT;
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
+        std::cout << "Your SHIFT is: " << SHIFT << std::endl;
+    } else {
+        std::cout << "Using default SHIFT: 3" << std::endl;
+        SHIFT = 3;
+    }
+
+    std::string message;
+
+    std::string messageToEncrypt = getMessageToEncrypt();
+    std::cout << "\nOriginal message: " << "\"" << messageToEncrypt << "\"" << std::endl;
+
+    std::cout << "\nEncrypting message..." << std::endl;
+
+    std::string caesarEncryptedMessage = caesarShiftEncryption(messageToEncrypt, SHIFT);
+    std::cout << "\nCaesar encrypted: " << "\"" << caesarEncryptedMessage << "\"" << std::endl;
+    std::string finalXorEncryptedMessage = xorEncryption(caesarEncryptedMessage, KEY);
+    std::cout << "\nAfter XOR: " << "\"" << finalXorEncryptedMessage << "\"" << std::endl;
+    waitForInput();
+    clearScreen();
+    std::cout << "The following screen prints the binary representation of the XOR encrypted message." << std::endl;
+    waitForInput();
+    clearScreen();
+    std::cout << "Binary representation of XOR encrypted message: \n\n";
+    printBinary(finalXorEncryptedMessage);
+    waitForInput();
+    clearScreen();
+
+}
+
+void decryptMessage() {
+    std::cout << "Would you like you use your own KEY? (Y/N): " << std::endl;
+    char choice;
+    std::cin >> choice;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
+    std::string KEY;
+    if (choice == 'Y' || choice == 'y') {
+        std::cout << "Enter your KEY: ";
+        std::getline(std::cin, KEY);
+        std::cout << "Your KEY is: " << KEY << std::endl;
+    } else {
+        std::cout << "Using default KEY: SWORD" << std::endl;
+        KEY = "SWORD";
+    }
+
+    std::cout << "Would you like to use your own SHIFT? (Y/N): " << std::endl;
+    char choice2;
+    std::cin >> choice2;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
+    int SHIFT; // Declare SHIFT outside the conditional block
+    if (choice2 == 'Y' || choice2 == 'y') {
+        std::cout << "Enter your SHIFT: ";
+        std::cin >> SHIFT;
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
+        std::cout << "Your SHIFT is: " << SHIFT << std::endl;
+    } else {
+        std::cout << "Using default SHIFT: 3" << std::endl;
+        SHIFT = 3;
+    }
+
+    std::string message;
+
+    std::string messageToDecrypt = getMessageToEncrypt();
+    std::cout << "\nOriginal message: " << "\"" << messageToDecrypt << "\"" << std::endl;
+
+    std::cout << "\nDecrypting message..." << std::endl;
+
+    std::string xorDecryptedMessage = xorDecryption(messageToDecrypt, KEY);
+    std::cout << "\nAfter XOR decryption: " << "\"" <<  xorDecryptedMessage << "\"" << std::endl;
+
+    std::string finalDecryptedMessage = caesarShiftDecryption(xorDecryptedMessage, SHIFT);
+    std::cout << "\nFinal decrypted message: " << "\"" <<finalDecryptedMessage << "\"" << std::endl;
+}
+
 int main() {
     programIntroduction();
-
     encryptionDemonstration();
+    mainMenu();
     
     return 0;
 }
