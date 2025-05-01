@@ -1,59 +1,112 @@
-/*
-Noah Tah
-4/30/2025
-Programming II
-Evan Vaverka
-Northwestern Oklahoma State University
-Assignment Description:
-    Final Project
-    - Make a program that encrypts and decrypts a message using a key.
-    - Ask the user if they want to encrypt a message, decrypt a message, or show the stored message.
-    - The user will need to know the key to decrypt the message.
-    - (If using a shift cipher the user needs to know how many spaces to shift the alphabet..)
-    - This means submit the key with the program.
-    - The stored message will be:
-        "Encryption or decryption successful"
-        "This system is ready for further testing of messages"
-    - If the user selects the option to show the stored message,
-    after accepting the key from the user, the program should display this message in its encrypted form
-    and in its decrypted form.
- */
-
 #include <iostream>
 #include <string>
+#include <bitset>
 #include <vector>
+#include <limits>
+#ifdef _WIN32
+#include <cstdlib> // For system()
+#endif
 
-
-// Caesar Shift Encryption Function
-std::string caesarShiftEncryption(const std::string& message, int SHIFT) {      // Shift value as a parameter makes this function more flexible
+std::string caesarShiftEncryption(const std::string& message, int SHIFT) {
     std::string encryptedMessage = message;
     for (char& c : encryptedMessage) {
-        if (isalpha(c)) {                                                       // Check if the character is an alphabet letter
-            char base = islower(c) ? 'a' : 'A';                                 // Check if the character is lowercase or uppercase, and set the base accordingly
-            c = (c - base + SHIFT) % 26 + base;                                 // Shift the character and wrap around using modulo 26 
+        if (isalpha(c)) {
+            char base = islower(c) ? 'a' : 'A';
+            c = (c - base + SHIFT) % 26 + base;
         }
     }
     return encryptedMessage;
 }
 
-// Caesar Shift Decryption Function
-std::string caesarShiftDecryption(const std::string& message, int shift) {      
-    return caesarShiftEncryption(message, 26 - shift);                          // Decrypting is just shifting back by the same amount
+std::string caesarShiftDecryption(const std::string& message, int shift) {
+    return caesarShiftEncryption(message, 26 - shift);
 }
 
-
-// XOR Encryption Function
-std::string xorEncryption(const std::string& message, const std::string& key) {
-
-
+int createXorKey(const std::string& KEY) {
+    int xorKey = 0;
+    for (char c : KEY) {
+        xorKey += static_cast<int>(c);
+    }
+    return xorKey % 256;
 }
 
- int main() {
-    std::string TEST_MESSAGE = "I can't wait to play Oblivion Remastered!";     // This will be used to store an example message 
-    int SHIFT = 3;                                                              // This is how much we want to shift the message by
+std::string xorEncryption(const std::string& message, const std::string& KEY) {
+    std::string encryptedMessage = message;
+    int xorKey = createXorKey(KEY);
+    for (size_t i = 0; i < message.size(); i++) {
+        encryptedMessage[i] = static_cast<char>(static_cast<int>(message[i]) ^ xorKey);
+    }
+    return encryptedMessage;
+}
+
+std::string xorDecryption(const std::string& message, const std::string& KEY) {
+    return xorEncryption(message, KEY);
+}
+
+void printBinary(const std::string& message) {
+    for (char c : message) {
+        std::cout << std::bitset<8>(static_cast<unsigned char>(c)) << " ";
+    }
+    std::cout << std::endl;
+}
+
+void waitForInput() {
+    std::cout << "Press Enter to continue...";
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+    // Clear the screen based on operating system
+    #ifdef _WIN32
+        // Windows
+        std::system("cls");
+    #else
+        // Unix/Linux/MacOS
+        std::system("clear");
+        // Alternative ANSI escape code if system() doesn't work
+    #endif
+}
+
+void clearScreen() {
+    // Clear the screen based on operating system
+    #ifdef _WIN32
+        // Windows
+        std::system("cls");
+    #else
+        // Unix/Linux/MacOS
+        std::system("clear");
+    #endif
+}
+
+void encryptionDemonstration() {
+    clearScreen();
+    std::string TEST_MESSAGE = "I can't wait to play Oblivion Remastered!";
+    int SHIFT = 3;
+    std::string KEY = "SWORD";
+
+    std::cout << "\nOriginal message: " << TEST_MESSAGE << std::endl;
+
+    std::cout << "\nEncrypting message..." << std::endl;
+    
     std::string caesarEncryptedMessage = caesarShiftEncryption(TEST_MESSAGE, SHIFT);
-    std::cout << "Encrypted message: " << caesarEncryptedMessage << std::endl;  // This will show the encrypted message
-    std::cout << "Decrypted message: " << caesarShiftDecryption(caesarEncryptedMessage, SHIFT) << std::endl; // This will show the decrypted message
+    std::cout << "\nCaesar encrypted: " << caesarEncryptedMessage << std::endl;
 
+    std::string finalXorEncryptedMessage = xorEncryption(caesarEncryptedMessage, KEY);
+    std::cout << "\nAfter XOR: " << finalXorEncryptedMessage << std::endl;
+    std::cout << "\nBinary representation of XOR encrypted message: \n\n";
+    printBinary(finalXorEncryptedMessage);
+
+    std::cout << "\nDecrypting message..." << std::endl;
+
+    std::string xorDecryptedMessage = xorDecryption(finalXorEncryptedMessage, KEY);
+    std::cout << "\nAfter XOR decryption: " << xorDecryptedMessage << std::endl;
+
+    std::string finalDecryptedMessage = caesarShiftDecryption(xorDecryptedMessage, SHIFT);
+    std::cout << "\nFinal decrypted: " << finalDecryptedMessage << std::endl;
+    clearScreen();
+}
+
+int main() {
+
+    encryptionDemonstration();
+    
     return 0;
- }
+}
