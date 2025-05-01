@@ -25,12 +25,12 @@ Assignment Description:
 
 
 // Caesar Shift Encryption Function
-std::string caesarShiftEncryption(const std::string& message, int shift) {      // Shift value as a parameter makes this function more flexible
+std::string caesarShiftEncryption(const std::string& message, int SHIFT) {      // Shift value as a parameter makes this function more flexible
     std::string encryptedMessage = message;
     for (char& c : encryptedMessage) {
         if (isalpha(c)) {                                                       // Check if the character is an alphabet letter
             char base = islower(c) ? 'a' : 'A';                                 // Check if the character is lowercase or uppercase, and set the base accordingly
-            c = (c - base + shift) % 26 + base;                                 // Shift the character and wrap around using modulo 26 
+            c = (c - base + SHIFT) % 26 + base;                                 // Shift the character and wrap around using modulo 26 
         }
     }
     return encryptedMessage;
@@ -41,12 +41,19 @@ std::string caesarShiftDecryption(const std::string& message, int shift) {
     return caesarShiftEncryption(message, 26 - shift);                          // Decrypting is just shifting back by the same amount
 }
 
+
+// XOR Encryption Function
+std::string xorEncryption(const std::string& message, const std::string& key) {
+
+
+}
+
  int main() {
-    std::string inputMessage = "I can't wait to play Oblivion Remastered!";     // This will be used to store an example message 
-    int shift = 3;                                                              // This is how much we want to shift the message by
-    std::string caesarEncryptedMessage = caesarShiftEncryption(inputMessage, shift);
+    std::string TEST_MESSAGE = "I can't wait to play Oblivion Remastered!";     // This will be used to store an example message 
+    int SHIFT = 3;                                                              // This is how much we want to shift the message by
+    std::string caesarEncryptedMessage = caesarShiftEncryption(TEST_MESSAGE, SHIFT);
     std::cout << "Encrypted message: " << caesarEncryptedMessage << std::endl;  // This will show the encrypted message
-    std::cout << "Decrypted message: " << caesarShiftDecryption(caesarEncryptedMessage, shift) << std::endl; // This will show the decrypted message
+    std::cout << "Decrypted message: " << caesarShiftDecryption(caesarEncryptedMessage, SHIFT) << std::endl; // This will show the decrypted message
 
     return 0;
  }
