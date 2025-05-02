@@ -221,39 +221,73 @@ void mainMenu() {
 }
 
 void displayStoredMessage(const std::string& storedMessage) {
-    std::string KEY;
-    int SHIFT;
+    std::string KEY = "SWORD";
+    int SHIFT = 3;
+    
+    // Check if we're using the default message
+    bool isDefaultMessage = (storedMessage == "I can't wait to play Oblivion Remastered!");
+    
+    if (isDefaultMessage) {
+        // For the default message, we need to encrypt it first to demonstrate the process
+        std::cout << "\nDetected default stored message. Demonstrating encryption/decryption process:" << std::endl;
+        std::cout << "Using default KEY: SWORD and default SHIFT: 3" << std::endl;
+        waitForInput();
+        clearScreen();
+        
+        // Show the original message
+        std::cout << "Original message: \"" << storedMessage << "\"" << std::endl << std::endl;
+        
+        // Encrypt it
+        std::string caesarEncrypted = caesarShiftEncryption(storedMessage, SHIFT);
+        std::cout << "After Caesar encryption: \"" << caesarEncrypted << "\"" << std::endl;
+        
+        std::string fullyEncrypted = xorEncryption(caesarEncrypted, KEY);
+        std::cout << "\nAfter XOR encryption: \"" << fullyEncrypted << "\"" << std::endl;
 
-    std::cout << "In order to decrypt the stored message, you will need the same KEY and SHIFT used to encrypt it." << std::endl;
+        waitForInput();
+        clearScreen();
 
-    std::cout << "\nStored message: " << "\"" << storedMessage << "\"" << std::endl;
+        std::cout << "The following screen will decrypt the message." << std::endl;
 
-    std::cout << "\nOn the next screen, you will be prompted to enter the KEY and SHIFT used to encrypt the message." << std::endl;
-    waitForInput();
-    clearScreen();
+        waitForInput();
+        clearScreen();
 
-    std::cout << "Please enter the KEY used to encrypt the message: ";
-    std::getline(std::cin, KEY);
-    std::cout << "Please enter the SHIFT used to encrypt the message: ";
-    std::cin >> SHIFT;
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
+        // Then decrypt it to show the process
+        std::cout << "Decrypting message..." << std::endl;
+        
+        std::string xorDecrypted = xorDecryption(fullyEncrypted, KEY);
+        std::cout << "\nAfter XOR decryption: \"" << xorDecrypted << "\"" << std::endl;
+        
+        std::string finalDecrypted = caesarShiftDecryption(xorDecrypted, SHIFT);
+        std::cout << "\nFinal decrypted message: \"" << finalDecrypted << "\"" << std::endl;
 
-    std::cout << "\nDecrypting stored message..." << std::endl;
+        waitForInput();
+        clearScreen();
+    } else {
+        // For user encrypted messages, proceed with normal decryption
+        std::cout << "In order to decrypt the stored message, you will need the same KEY and SHIFT used to encrypt it." << std::endl;
+        std::cout << "\nStored message: \"" << storedMessage << "\"" << std::endl;
+        std::cout << "\nOn the next screen, you will be prompted to enter the KEY and SHIFT used to encrypt the message." << std::endl;
+        waitForInput();
+        clearScreen();
 
-    std::string xorDecryptedMessage = xorDecryption(storedMessage, KEY);
-    std::cout << "\nAfter removing XOR decryption: " << "\"" <<  xorDecryptedMessage << "\"" << std::endl;
+        std::cout << "Please enter the KEY used to encrypt the message: ";
+        std::getline(std::cin, KEY);
+        std::cout << "Please enter the SHIFT used to encrypt the message: ";
+        std::cin >> SHIFT;
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
+        
+        std::cout << "\nStored message: \"" << storedMessage << "\"" << std::endl;
+        std::cout << "\nDecrypting stored message..." << std::endl;
 
-    std::string finalDecryptedMessage = caesarShiftDecryption(xorDecryptedMessage, SHIFT);
-    std::cout << "\nAfter removing Caesar encryption: " << "\"" <<finalDecryptedMessage << "\"" << std::endl;
+        std::string xorDecryptedMessage = xorDecryption(storedMessage, KEY);
+        std::cout << "\nAfter removing XOR decryption: \"" << xorDecryptedMessage << "\"" << std::endl;
 
-    waitForInput();
-    clearScreen();
+        std::string finalDecryptedMessage = caesarShiftDecryption(xorDecryptedMessage, SHIFT);
+        std::cout << "\nAfter removing Caesar encryption: \"" << finalDecryptedMessage << "\"" << std::endl;
+    }
+
     std::cout << "Decryption complete!" << std::endl;
-    std::cout << "Press Enter to return to the main menu." << std::endl;
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    clearScreen();
-    mainMenu();
-
 }
 
 std::string getMessageToEncrypt() {
