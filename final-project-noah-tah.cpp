@@ -35,7 +35,6 @@ void encryptionDemonstration();
 void programIntroduction();
 void mainMenu();
 void displayStoredMessage(const std::string& storedMessage);
-std::string encryptMessage();
 std::string decryptMessage();
 std::string getMessageToEncrypt();
 std::string caesarShiftEncryption(const std::string& message, int SHIFT);
@@ -169,15 +168,9 @@ void encryptionDemonstration() {
 }
 
 void programIntroduction() {
-    std::cout << "Welcome to the Encryption Demonstration Program!" << std::endl;
+    std::cout << "Welcome to Noah Tah's Encryption and Decryption Program!" << std::endl;
     std::cout << "This program demonstrates a simple encryption and decryption process." << std::endl;
     std::cout << "It uses Caesar Shift and XOR encryption methods." << std::endl;
-    waitForInput();
-    clearScreen();
-    std::cout << "The program will now demonstrate the encryption and decryption process." << std::endl;
-    std::cout << "\nYou will see the original message before any encryption occurs." << std::endl;
-    std::cout << "\nThen, the message will be encrypted using the Caesar Shift method." << std::endl;
-    std::cout << "\nNext, the encrypted message will be further encrypted using XOR encryption." << std::endl;
     waitForInput();
     clearScreen();
 }
@@ -194,7 +187,10 @@ void mainMenu() {
     switch (choice) {
         case 1:
             encryptionDemonstration();
-            break;
+            std::cout << "Returning to the main menu..." << std::endl;
+            waitForInput();
+            clearScreen();
+            mainMenu();
         case 2: {
             storedMessage = encryptMessage();
             std::cout << "Returning to the main menu..." << std::endl;
@@ -362,34 +358,23 @@ std::string encryptMessage() {
 }
 
 std::string decryptMessage() {
-    std::cout << "Would you like you use your own KEY? (Y/N): ";
-    char choice;
-    std::cin >> choice;
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
     std::string KEY;
-    if (choice == 'Y' || choice == 'y') {
-        std::cout << "Enter your KEY: ";
-        std::getline(std::cin, KEY);
-        std::cout << "Your KEY is: " << KEY << std::endl;
-    } else {
-        std::cout << "Using default KEY: SWORD" << std::endl;
-        KEY = "SWORD";
-    }
-
-    std::cout << "Would you like to use your own SHIFT? (Y/N): ";
-    char choice2;
-    std::cin >> choice2;
+    std::cout << "In order to decrypt the message, you will need the same KEY and SHIFT used to encrypt it." << std::endl;
+    std::cout << "\nOn the next screen, you will be prompted to enter the KEY and SHIFT used to encrypt the message." << std::endl;
+    waitForInput();
+    clearScreen();
+    std::cout << "Enter the KEY used for encrpytion: ";
+    std::getline(std::cin, KEY);
+    std::cout << "Using KEY: " << KEY;
+    std::cout << "\nEnter the SHIFT used for encryption: ";
+    int SHIFT;
+    std::cin >> SHIFT;
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
-    int SHIFT; // Declare SHIFT outside the conditional block
-    if (choice2 == 'Y' || choice2 == 'y') {
-        std::cout << "Enter your SHIFT: ";
-        std::cin >> SHIFT;
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
-        std::cout << "Your SHIFT is: " << SHIFT << std::endl;
-    } else {
-        std::cout << "Using default SHIFT: 3" << std::endl;
-        SHIFT = 3;
-    }
+    std::cout << "Using SHIFT: " << SHIFT << std::endl;
+
+    std::cout << "\nOn the next screen, you will be prompted to enter a message to decrypt." << std::endl;
+    waitForInput();
+    clearScreen();
 
     std::string message;
 
@@ -403,6 +388,11 @@ std::string decryptMessage() {
 
     std::string finalDecryptedMessage = caesarShiftDecryption(xorDecryptedMessage, SHIFT);
     std::cout << "\nAfter removed Caesar encryption: " << "\"" <<finalDecryptedMessage << "\"" << std::endl;
+
+    waitForInput();
+    clearScreen();
+
+    return finalDecryptedMessage;
 }
 
 int main() {
