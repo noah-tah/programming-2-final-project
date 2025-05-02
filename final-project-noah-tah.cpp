@@ -24,6 +24,7 @@ Assignment Description:
 #include <bitset>
 #include <vector>
 #include <limits>
+#include <sstream>
 #ifdef _WIN32
 #include <cstdlib> // For system()
 #endif
@@ -46,6 +47,7 @@ void printBinary(const std::string& message);
 void waitForInput();
 void clearScreen();
 std::string encryptMessage();
+std::string binaryStringToBytes(const std::string& binaryString);
 /*
 End of function prototypes
 */
@@ -95,8 +97,21 @@ std::string xorDecryption(const std::string& message, const std::string& KEY) {
 }
 
 void printBinary(const std::string& message) {
+    std::cout << "Binary representation:" << std::endl;
     for (char c : message) {
         std::cout << std::bitset<8>(static_cast<unsigned char>(c)) << " ";
+    }
+    std::cout << std::endl << std::endl;
+    
+    // Add ASCII representation for copy-pasting
+    std::cout << "Copy-pastable ASCII binary sequence:" << std::endl;
+    for (char c : message) {
+        std::bitset<8> bits(static_cast<unsigned char>(c));
+        std::string bitString = bits.to_string();
+        for (char bit : bitString) {
+            std::cout << bit;
+        }
+        std::cout << " ";
     }
     std::cout << std::endl;
 }
@@ -144,10 +159,10 @@ void encryptionDemonstration() {
     std::cout << "\nAfter XOR: " << "\"" << finalXorEncryptedMessage << "\"" << std::endl;
     waitForInput();
     clearScreen();
-    std::cout << "The following screen prints the binary representation of the XOR encrypted message." << std::endl;
+    std::cout << "The following screen shows both the binary representation and a copy-pastable ASCII version of the encrypted message." << std::endl;
     waitForInput();
     clearScreen();
-    std::cout << "Binary representation of XOR encrypted message: \n\n";
+    std::cout << "Binary and ASCII representation of XOR encrypted message: \n\n";
     printBinary(finalXorEncryptedMessage);
     waitForInput();
     clearScreen();
@@ -308,10 +323,10 @@ std::string encryptMessage() {
     storedMessage = finalXorEncryptedMessage;
     waitForInput();
     clearScreen();
-    std::cout << "The following screen prints the binary representation of the XOR encrypted message." << std::endl;
+    std::cout << "The following screen shows both the binary representation and a copy-pastable ASCII version of the encrypted message." << std::endl;
     waitForInput();
     clearScreen();
-    std::cout << "Binary representation of XOR encrypted message: \n\n";
+    std::cout << "Binary and ASCII representation of XOR encrypted message: \n\n";
     printBinary(finalXorEncryptedMessage);
     waitForInput();
     clearScreen();
@@ -381,26 +396,64 @@ std::string decryptMessage() {
     std::cout << "Using SHIFT: " << SHIFT << std::endl;
 
     std::cout << "\nOn the next screen, you will be prompted to enter a message to decrypt." << std::endl;
+    std::cout << "\nYou can enter either an encrypted message or a binary representation (e.g., \"10101010 11001100\")." << std::endl;
     waitForInput();
     clearScreen();
-
-    std::string message;
 
     std::string messageToDecrypt = getMessageToDecrypt();
     std::cout << "\nOriginal message: " << "\"" << messageToDecrypt << "\"" << std::endl;
 
+    // Check if the input appears to be binary (only 0s, 1s, and spaces)
+    bool isBinary = true;
+    for (char c : messageToDecrypt) {
+        if (c != '0' && c != '1' && c != ' ') {
+            isBinary = false;
+            break;
+        }
+    }
+
+    // If it's binary, convert it first
+    if (isBinary) {
+        messageToDecrypt = binaryStringToBytes(messageToDecrypt);
+        std::cout << "\nDetected binary input, converted to binary data for decryption." << std::endl;
+    }
+
     std::cout << "\nDecrypting message..." << std::endl;
 
     std::string xorDecryptedMessage = xorDecryption(messageToDecrypt, KEY);
-    std::cout << "\nAfter removing XOR decryption: " << "\"" <<  xorDecryptedMessage << "\"" << std::endl;
+    std::cout << "\nAfter removing XOR decryption: " << "\"" << xorDecryptedMessage << "\"" << std::endl;
 
     std::string finalDecryptedMessage = caesarShiftDecryption(xorDecryptedMessage, SHIFT);
-    std::cout << "\nAfter removed Caesar encryption: " << "\"" <<finalDecryptedMessage << "\"" << std::endl;
+    std::cout << "\nAfter removing Caesar encryption: " << "\"" << finalDecryptedMessage << "\"" << std::endl;
 
     waitForInput();
     clearScreen();
 
     return finalDecryptedMessage;
+}
+
+// Add this function to convert text binary representation to actual binary data
+std::string binaryStringToBytes(const std::string& binaryString) {
+    std::string result;
+    std::istringstream stream(binaryString);
+    std::string byteString;
+    
+    // Read each byte representation (separated by spaces)
+    while (stream >> byteString) {
+        if (byteString.length() != 8) {
+            // Skip invalid binary sequences
+            continue;
+        }
+        
+        // Convert the binary string to an actual byte
+        char byte = 0;
+        for (char bit : byteString) {
+            byte = (byte << 1) | (bit == '1' ? 1 : 0);
+        }
+        result += byte;
+    }
+    
+    return result;
 }
 
 int main() {
