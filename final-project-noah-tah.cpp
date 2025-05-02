@@ -97,21 +97,9 @@ std::string xorDecryption(const std::string& message, const std::string& KEY) {
 }
 
 void printBinary(const std::string& message) {
-    std::cout << "Binary representation:" << std::endl;
+    std::cout << "Copy-pastable binary representation:" << std::endl;
     for (char c : message) {
         std::cout << std::bitset<8>(static_cast<unsigned char>(c)) << " ";
-    }
-    std::cout << std::endl << std::endl;
-    
-    // Add ASCII representation for copy-pasting
-    std::cout << "Copy-pastable ASCII binary sequence:" << std::endl;
-    for (char c : message) {
-        std::bitset<8> bits(static_cast<unsigned char>(c));
-        std::string bitString = bits.to_string();
-        for (char bit : bitString) {
-            std::cout << bit;
-        }
-        std::cout << " ";
     }
     std::cout << std::endl;
 }
@@ -159,10 +147,10 @@ void encryptionDemonstration() {
     std::cout << "\nAfter XOR: " << "\"" << finalXorEncryptedMessage << "\"" << std::endl;
     waitForInput();
     clearScreen();
-    std::cout << "The following screen shows both the binary representation and a copy-pastable ASCII version of the encrypted message." << std::endl;
+    std::cout << "The following screen shows the binary representation of the ASCII characters of the encrypted message, and can be copy-pasted for decryption later" << std::endl;
     waitForInput();
     clearScreen();
-    std::cout << "Binary and ASCII representation of XOR encrypted message: \n\n";
+    std::cout << "Binary representation of XOR encrypted message: \n\n";
     printBinary(finalXorEncryptedMessage);
     waitForInput();
     clearScreen();
@@ -323,10 +311,10 @@ std::string encryptMessage() {
     storedMessage = finalXorEncryptedMessage;
     waitForInput();
     clearScreen();
-    std::cout << "The following screen shows both the binary representation and a copy-pastable ASCII version of the encrypted message." << std::endl;
+    std::cout << "The following screen shows the binary representation of the ASCII characters of the encrypted message, and can be copy-pasted for decryption later" << std::endl;
     waitForInput();
     clearScreen();
-    std::cout << "Binary and ASCII representation of XOR encrypted message: \n\n";
+    std::cout << "Binary representation of XOR encrypted message: \n\n";
     printBinary(finalXorEncryptedMessage);
     waitForInput();
     clearScreen();
