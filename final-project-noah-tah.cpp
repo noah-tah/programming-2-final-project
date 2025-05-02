@@ -402,3 +402,14 @@ int main() {
     return 0;
 
 }
+
+/*
+This program uses a two-step encryption method combining a Caesar cipher with an XOR transformation for even more security and style points. 
+First, the program will perform a Caesar shift, which shifts the alpha bet by a specified number of positions. 
+The default shift value is 3, but the user can choose their own.
+Second, the program will apply an XOR transformation using a key.
+The default key is "SWORD", but the user can also choose their own key.
+The XOR transformation works by taking the ASCII value of each character in the message and XORing it with the ASCII value of the key.
+The program also includes a demonstration of the encryption and decryption process, showing the binary representation of the encrypted message.
+
+*/
